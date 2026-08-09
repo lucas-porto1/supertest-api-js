@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main, master]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: api-tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     timeout-minutes: 10
@@ -21,6 +28,12 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - name: Validate CI configuration
+        run: |
+          if [ -z "$API_KEY" ]; then
+            echo "::error::Missing REQRES_API_KEY secret for this workflow context"
+            exit 1
+          fi
       - name: Install dependencies
         run: npm ci
       - name: Check code quality
@@ -28,4 +41,4 @@ jobs:
       - name: Check formatting
         run: npm run format:check
       - name: Run API tests
-        run: npm test
+        run: npm test -- --forbid-only

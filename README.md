@@ -56,7 +56,9 @@ npm run check             # lint, formatting, and tests
 
 ```text
 .
-|-- .github/workflows/            # continuous integration pipeline
+|-- .github/
+|   |-- workflows/                # continuous integration pipeline
+|   `-- dependabot.yml            # monthly dependency update configuration
 |-- config/                        # validated environment configuration
 |-- core/                          # shared Supertest instance and base URL
 |-- endpoints/                     # resource files with paths and HTTP request functions
@@ -71,6 +73,7 @@ npm run check             # lint, formatting, and tests
 |       |-- expected/              # exact response bodies used in assertions
 |       `-- schemas/               # Joi response contracts
 |-- tests/                         # behavior-focused API scenarios
+|-- .mocharc.json                  # Mocha test runner configuration
 |-- eslint.config.js               # JavaScript quality rules
 `-- package.json                   # scripts and dependencies
 ```
@@ -102,6 +105,10 @@ Choose the simplest strategy that matches the payload and scenario instead of fo
 
 ## CI configuration
 
-The workflow runs linting, formatting validation, and API tests on pushes and pull requests. Add the ReqRes key as a GitHub Actions repository secret named `REQRES_API_KEY` before running the workflow.
+The workflow runs linting, formatting validation, and API tests on pushes and pull requests. It rejects committed `.only` to prevent accidentally running only part of the suite, while intentional skipped tests remain allowed.
+
+Add the ReqRes key as a GitHub Actions repository secret named `REQRES_API_KEY` before running the workflow. Because workflows triggered by Dependabot cannot access regular Actions secrets, add the same key as a Dependabot repository secret with the same name so its pull requests can run the API tests.
+
+Dependabot checks npm packages and GitHub Actions monthly and opens grouped pull requests for minor and patch updates. Major updates remain separate so their breaking changes can be reviewed carefully.
 
 Public example credentials can remain in the workflow, but API keys and credentials for real systems must always use repository secrets.

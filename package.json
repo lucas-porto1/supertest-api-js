@@ -7,8 +7,8 @@
     "node": "24.x"
   },
   "scripts": {
-    "test": "mocha \"tests/**/*.spec.js\" --timeout 10000",
-    "test:watch": "npm test -- --watch",
+    "test": "mocha",
+    "test:watch": "mocha --watch",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

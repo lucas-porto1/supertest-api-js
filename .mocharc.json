@@ -1,0 +1,8 @@
+{
+  "spec": ["tests/**/*.spec.js"],
+  "timeout": 10000,
+  "slow": 1000,
+  "reporter": "spec",
+  "checkLeaks": true,
+  "posixExitCodes": true
+}
