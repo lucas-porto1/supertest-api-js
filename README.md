@@ -58,7 +58,7 @@ npm run check             # lint, formatting, and tests
 .
 |-- .github/
 |   |-- workflows/                # continuous integration pipeline
-|   `-- dependabot.yml            # monthly dependency update configuration
+|   `-- dependabot.yml            # semiannual dependency update configuration
 |-- config/                        # validated environment configuration
 |-- core/                          # shared Supertest instance and base URL
 |-- endpoints/                     # resource files with paths and HTTP request functions
@@ -109,6 +109,6 @@ The workflow runs linting, formatting validation, and API tests on pushes and pu
 
 Add the ReqRes key as a GitHub Actions repository secret named `REQRES_API_KEY` before running the workflow. Because workflows triggered by Dependabot cannot access regular Actions secrets, add the same key as a Dependabot repository secret with the same name so its pull requests can run the API tests.
 
-Dependabot checks npm packages and GitHub Actions monthly and opens grouped pull requests for minor and patch updates. Major updates remain separate so their breaking changes can be reviewed carefully.
+Dependabot checks npm packages and GitHub Actions twice a year and opens grouped pull requests for minor and patch updates. Major updates remain separate so their breaking changes can be reviewed carefully.
 
 Public example credentials can remain in the workflow, but API keys and credentials for real systems must always use repository secrets.

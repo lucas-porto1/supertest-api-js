@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "test:watch": "mocha --watch",
+    "test:watch": "node --watch ./node_modules/mocha/bin/mocha.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
