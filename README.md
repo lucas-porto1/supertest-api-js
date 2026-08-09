@@ -1,128 +1,107 @@
-# Supertest API Project
+# Supertest JavaScript API Reference
 
-This project uses [SuperTest](https://github.com/visionmedia/supertest) for API testing in Node.js with Mocha and Chai. It also includes **dotenv** for environment variable management and **Prettier** for maintaining code style consistency.
+A JavaScript reference architecture for API test automation with Supertest, Mocha, Chai, Joi, reusable endpoint modules, response contract validation, and CI execution.
 
-## Table of Contents
+## Design principles
 
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Project Structure](#project-structure)
-- [Available Scripts](#available-scripts)
-- [Using Prettier](#using-prettier)
-- [Example Usage](#example-usage)
+- **Tests describe behavior:** status, payload, and contract expectations belong in `*.spec.js` files.
+- **Endpoints encapsulate API interactions:** each resource file keeps its path and HTTP request functions together.
+- **The API client stays focused:** it centralizes only the base URL and shared Supertest instance.
+- **Test data stays explicit:** request payload builders, exact expected responses, and response schemas have separate responsibilities.
+- **Tests remain deterministic:** scenarios use known records rather than random identifiers.
+- **Configuration fails fast:** required environment variables are validated with actionable messages.
 
----
+## Prerequisites
 
-## Installation
+- Node.js 24 LTS
+- npm
+- A free [ReqRes API key](https://reqres.in/signup)
 
-1. Clone the repository:
+The repository includes an `.nvmrc` file so compatible version managers such as nvm or fnm can select Node.js 24 with `nvm use` or `fnm use`.
 
-   ```bash
-   git clone https://github.com/lucas-porto1/supertest-api.git
-   cd supertest-api
-
-   ```
-
-2. Install project dependencies:
-
-   ```bash
-    npm install
-   ```
-
-## Configuration
-
-1. Create a .env file in the project root to configure environment variables such as the API URL and test data:
-
-```plaintext
-URL=https://your-api.com
-EMAIL=user@example.com
-PASSWORD=securePassword123
-```
-
-2. Ensure that the .env file is listed in .gitignore to protect sensitive information.
-
-   **Note**: The `.env` file in this repository includes sample credentials to facilitate smooth testing and setup. Ensure that sensitive credentials are replaced with secure values in production environments and avoid committing any sensitive information in live applications.
-
-## Project Structure
-
-The project is organized to separate functions and test data for better maintenance and reusability:
-
-```plaintext
-supertest-api/
-├── fixtures/
-│   ├── requestBody/
-│   │   └── register.js                  # Request body data for registration
-│   ├── responseBody/
-│   │   └── register.js                  # Expected response data for registration
-│   │   └── registerSchema.js            # Expected schema for registration
-├── support/
-│   ├── endpoints/
-│   │   └── register.js                  # API call functions for registration
-│   ├── helpers/
-│   │   └── utility.js                   # Utility functions, e.g., random number generation
-├── test/
-│   └── register.test.js                 # API tests for the registration endpoint
-├── .env                                 # Environment variables (URL, credentials)
-├── .gitignore                           # Git ignored files and directories
-├── .prettierrc.json                     # Prettier configuration
-├── package.json                         # Project dependencies and scripts
-└── README.md                            # Project documentation
-```
-
-## Folder Descriptions
-
-- **fixtures**/: Contains simulated data for requests (requestBody) and expected responses (responseBody).
-- **support**/: Includes endpoints for API call functions and helpers for utility functions.
-- **test**/: The main folder for API tests.
-
-## Available Scripts
-
-- npm test: Runs the project tests with Mocha.
-- npm run format: Runs Prettier to format the code automatically.
-
-## Using Prettier
-
-**Prettier** is used to ensure consistent and readable code. It is configured in the .prettierrc file with the following settings:
-
-```json
-{
-  "printWidth": 100,
-  "singleQuote": true,
-  "trailingComma": "none",
-  "semi": false,
-  "tabWidth": 2
-}
-```
-
-Run Prettier with:
+## Getting started
 
 ```bash
-npm run format
+git clone https://github.com/lucas-porto1/supertest-api-js.git
+cd supertest-api-js
+npm ci
 ```
 
-## Example Usage
-
-Here’s a basic example of how to test the register endpoint:
-
-```javascript
-import { postRegister } from '../support/endpoints/register.js'
-import { registerRequestBody } from '../fixtures/requestBody/register.js'
-
-describe('Register - Validations', function () {
-  it('Register a user', async function () {
-    const body = registerRequestBody(process.env.EMAIL, process.env.PASSWORD)
-    const response = await postRegister(body)
-
-    expect(response.statusCode).to.be.equal(200)
-    joi.assert(response.body, registerSchema)
-  })
-})
-```
-
-To run the API tests, use the command:
+Create the local environment file:
 
 ```bash
-npm test
+cp .env.example .env
 ```
 
-This project is set up to facilitate API testing, with a modular and organized structure. If you need support, feel free to open an issue on the repository!
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Replace `API_KEY` with a key from ReqRes. Never commit `.env` or real API keys.
+
+## Running the tests
+
+```bash
+npm test                  # run the complete API suite
+npm run test:watch        # rerun tests when files change
+npm run lint              # static analysis
+npm run format            # format project files
+npm run format:check      # verify formatting without changing files
+npm run check             # lint, formatting, and tests
+```
+
+## Project structure
+
+```text
+.
+|-- .github/workflows/            # continuous integration pipeline
+|-- config/                        # validated environment configuration
+|-- core/                          # shared Supertest instance and base URL
+|-- endpoints/                     # resource files with paths and HTTP request functions
+|   |-- auth/
+|   |   |-- login.js
+|   |   `-- register.js
+|   `-- users/
+|       `-- users.js
+|-- test-data/
+|   |-- requests/                  # request payload builders
+|   `-- responses/
+|       |-- expected/              # exact response bodies used in assertions
+|       `-- schemas/               # Joi response contracts
+|-- tests/                         # behavior-focused API scenarios
+|-- eslint.config.js               # JavaScript quality rules
+`-- package.json                   # scripts and dependencies
+```
+
+## Request flow
+
+```text
+Test -> Endpoint -> API client
+```
+
+For example, a test calls `postLogin()` from `endpoints/auth/login.js`. That file keeps the `/login` path and the complete request construction together, while `core/apiClient.js` only provides the Supertest instance with the configured base URL.
+
+## Payload strategies
+
+The project demonstrates two payload factory strategies for different testing needs:
+
+- `createAuthPayload()` adds only explicitly provided fields. This is useful for small payloads and negative scenarios that distinguish an omitted field from `null` or an empty value.
+- `createUserPayload()` starts with complete valid defaults and accepts overrides, including a nested address merge. This keeps large positive payloads readable when each scenario changes only a few values.
+
+Choose the simplest strategy that matches the payload and scenario instead of forcing every request through one generic builder.
+
+## Adding an endpoint
+
+1. Create or update the resource file in `endpoints/`, keeping its path and supported HTTP methods together.
+2. Add request payload builders or expected responses only when they are reused or improve readability.
+3. Add or update a Joi schema for the response contract.
+4. Write behavior and assertions in a `*.spec.js` file under the relevant domain in `tests/`.
+5. Run `npm run check` before submitting the change.
+
+## CI configuration
+
+The workflow runs linting, formatting validation, and API tests on pushes and pull requests. Add the ReqRes key as a GitHub Actions repository secret named `REQRES_API_KEY` before running the workflow.
+
+Public example credentials can remain in the workflow, but API keys and credentials for real systems must always use repository secrets.

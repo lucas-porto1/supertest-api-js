@@ -1,20 +1,37 @@
 {
-  "name": "supertest-api",
+  "name": "supertest-api-js",
   "version": "1.0.0",
   "type": "module",
-  "scripts": {
-    "test": "mocha",
-    "format": "prettier --write ."
+  "private": true,
+  "engines": {
+    "node": "24.x"
   },
-  "dependencies": {
-    "chai": "^5.1.2",
-    "dotenv": "^16.4.5",
-    "joi": "^17.13.3",
-    "mocha": "^10.8.2",
-    "supertest": "^7.0.0",
-    "supertest-api": "file:"
+  "scripts": {
+    "test": "mocha \"tests/**/*.spec.js\" --timeout 10000",
+    "test:watch": "npm test -- --watch",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm test"
+  },
+  "author": "Lucas Porto",
+  "license": "ISC",
+  "description": "JavaScript reference architecture for API test automation with Supertest, Mocha, Chai, and Joi.",
+  "overrides": {
+    "mocha": {
+      "diff": "^8.0.3",
+      "glob": "^12.0.0",
+      "serialize-javascript": "^7.1.0"
+    }
   },
   "devDependencies": {
-    "prettier": "^3.3.3"
+    "chai": "^6.2.2",
+    "dotenv": "^17.4.2",
+    "eslint": "^10.8.1",
+    "globals": "^17.9.0",
+    "joi": "^18.2.3",
+    "mocha": "^11.8.0",
+    "prettier": "^3.9.6",
+    "supertest": "^7.2.2"
   }
 }
