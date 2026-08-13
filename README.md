@@ -1,4 +1,4 @@
-# Supertest JavaScript API Reference
+# Supertest API with Mocha — JavaScript Reference
 
 A JavaScript reference architecture for API test automation with Supertest, Mocha, Chai, Joi, reusable endpoint modules, response contract validation, and CI execution.
 
@@ -22,8 +22,8 @@ The repository includes an `.nvmrc` file so compatible version managers such as 
 ## Getting started
 
 ```bash
-git clone https://github.com/lucas-porto1/supertest-api-js.git
-cd supertest-api-js
+git clone https://github.com/lucas-porto1/supertest-api-mocha-js.git
+cd supertest-api-mocha-js
 npm ci
 ```
 
