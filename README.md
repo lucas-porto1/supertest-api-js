@@ -1,5 +1,9 @@
 # Supertest API with Mocha — JavaScript Reference
 
+[![CI](https://github.com/lucas-porto1/supertest-api-mocha-js/actions/workflows/api-tests.yml/badge.svg?branch=main)](https://github.com/lucas-porto1/supertest-api-mocha-js/actions/workflows/api-tests.yml)
+
+_Part of [Lucas Porto's QA Automation Reference Collection](https://github.com/lucas-porto1): QA-first templates built for readability, reproducibility, and sustainable maintenance._
+
 A JavaScript reference architecture for API test automation with Supertest, Mocha, Chai, Joi, reusable endpoint modules, response contract validation, and CI execution.
 
 ## Design principles
