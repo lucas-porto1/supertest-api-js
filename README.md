@@ -49,6 +49,7 @@ Replace `API_KEY` with a key from ReqRes. Never commit `.env` or real API keys.
 
 ```bash
 npm test                  # run the complete API suite
+npm run test:report       # run the suite and generate an HTML report
 npm run test:watch        # rerun tests when files change
 npm run lint              # static analysis
 npm run format            # format project files
@@ -107,11 +108,21 @@ Choose the simplest strategy that matches the payload and scenario instead of fo
 4. Write behavior and assertions in a `*.spec.js` file under the relevant domain in `tests/`.
 5. Run `npm run check` before submitting the change.
 
-## CI configuration
+## Reports
 
-The workflow runs linting, formatting validation, and API tests on pushes and pull requests. It rejects committed `.only` to prevent accidentally running only part of the suite, while intentional skipped tests remain allowed.
+`npm run test:report` generates a self-contained Mochawesome report at `reports/index.html`. The latest report from `main` is available at [lucas-porto1.github.io/supertest-api-mocha-js](https://lucas-porto1.github.io/supertest-api-mocha-js/).
+
+## CI behavior
+
+The workflow runs linting, formatting validation, and API tests on pushes and pull requests. It rejects committed `.only` to prevent accidentally running only part of the suite, while intentional skipped tests remain allowed. Runs on `main` publish the HTML report to GitHub Pages and add its direct URL to the job summary. Pull requests do not replace the published report; a failed run retains its HTML report as a short-lived artifact for diagnosis.
+
+Before the first deployment, select **GitHub Actions** as the Pages source under the repository's **Settings > Pages**.
 
 Add the ReqRes key as a GitHub Actions repository secret named `REQRES_API_KEY` before running the workflow. Because workflows triggered by Dependabot cannot access regular Actions secrets, add the same key as a Dependabot repository secret with the same name so its pull requests can run the API tests.
+
+Reports can contain request and response data. Disable public Pages publishing or use access-controlled reporting infrastructure before reusing this setup with sensitive client systems.
+
+## Dependency maintenance
 
 Dependabot checks npm packages and GitHub Actions twice a year and opens grouped pull requests for minor and patch updates. Major updates remain separate so their breaking changes can be reviewed carefully.
 

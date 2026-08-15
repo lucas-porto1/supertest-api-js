@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "mocha",
+    "test:report": "mocha --reporter mochawesome --reporter-option reportDir=reports,reportFilename=index,overwrite=true,html=true,json=false,inline=true",
     "test:watch": "node --watch ./node_modules/mocha/bin/mocha.js",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -31,6 +32,7 @@
     "globals": "^17.9.0",
     "joi": "^18.2.3",
     "mocha": "^11.8.0",
+    "mochawesome": "^8.0.1",
     "prettier": "^3.9.6",
     "supertest": "^7.2.2"
   }
